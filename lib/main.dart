@@ -27,9 +27,9 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: false,
         ),
-        initialRoute: "/admin",
+        initialRoute: "/main",
         getPages: [
-          GetPage(name: "/", page: () => MainPage()),
+          GetPage(name: "/main", page: () => MainPage()),
           GetPage(name: "/admin", page: () => AdminAdd()),
         ],
       );

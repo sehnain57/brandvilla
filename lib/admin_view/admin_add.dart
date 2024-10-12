@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:brandvilla/constants/app_text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:file_picker/file_picker.dart';
 import '../constants/app_colors.dart';
 import '../constants/custom_dropdown.dart';
+import '../controllers/cat_controller.dart';
 
 class AdminAdd extends StatefulWidget {
   const AdminAdd({super.key});
@@ -14,6 +18,7 @@ class AdminAdd extends StatefulWidget {
 
 class _AdminAddState extends State<AdminAdd> {
   String? _fileName = "No file chosen";
+
   Future<void> _pickImage() async {
     // Pick an image file using file picker
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -25,9 +30,14 @@ class _AdminAddState extends State<AdminAdd> {
       // If a file is chosen, update the state with the file name
       setState(() {
         _fileName = result.files.first.name;
+        posterControl.setSelectedImageBytes(result.files.first.bytes);
+        print(posterControl.selectedImageBytes);
       });
     }
   }
+
+  final PosterControl posterControl = Get.put(PosterControl());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,93 +117,139 @@ class _AdminAddState extends State<AdminAdd> {
           // ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 2.h,
-                ),
-                AppMainText(
-                  text: "Admin Dashboard",
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-                SizedBox(
-                  height: 15.h,
-                ),
-                SizedBox(
-                  width: 350,
+      body: GetBuilder<CategoriesController>(
+          init: CategoriesController(),
+          builder: (controller) {
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Center(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      CustomDropDownBorder(
-                        hintText: "Select Category",
-                        items: categories.map((e) {
-                          return DropdownMenuItem(
-                            value: e,
-                            child: AppText(text: e.toString()),
-                          );
-                        }).toList(),
-                        selectedValue: cat,
-                        onChanged: (val) {},
-                        onSaved: (val) {},
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      AppMainText(
+                        text: "Admin Dashboard",
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
                       ),
                       SizedBox(
-                        height: 4.h,
+                        height: 15.h,
                       ),
-                      Container(
+                      SizedBox(
                         width: 350,
-                        height: 48,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                                color: Colors.black.withOpacity(0.3))),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 12.0, right: 12),
-                          child: Row(
-                            children: [
-                              InkWell(
-                                onTap: (){},
-                                child: Container(
-                                  width: 80,
-                                  height: 25,
-                                  decoration: BoxDecoration(
-                                      color: Colors.black12,
-                                      border: Border.all(color: Colors.black,width: 0.5)),
-                                  child: Center(child: AppText(text: "Choose file",fontSize: 12,
-                                  fontWeight: FontWeight.bold
-                                  )),
+                        child: Column(
+                          children: [
+                            Obx(() => CustomDropDownBorder(
+                                  hintText: controller.isLoading.value
+                                      ? "Loading ... "
+                                      : "Select Category",
+                                  items: controller.categories.map((category) {
+                                    return DropdownMenuItem(
+                                      value: category.id,
+                                      child: AppText(
+                                          text: category.name ?? 'Unnamed'),
+                                    );
+                                  }).toList(),
+                                  selectedValue: cat,
+                                  // Initially no selection
+                                  onChanged: (val) {
+                                    // Handle dropdown selection change
+                                    print("Selected Category ID: $val");
+
+                                    posterControl.setSelectedCategory(val);
+                                    setState(() {
+                                      cat = val;
+                                    });
+                                    print("Selected Category ID: ${posterControl.selectedCategoryId}");
+                                  },
+                                  onSaved: (val) {
+                                    setState(() {
+                                      cat = val;
+                                    });
+                                    // Handle when the form is saved
+                                  },
+                                )),
+                            SizedBox(
+                              height: 4.h,
+                            ),
+                            Container(
+                              width: 350,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                      color: Colors.black.withOpacity(0.3))),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 12.0, right: 12),
+                                child: Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: _pickImage,
+                                      child: Container(
+                                        width: 80,
+                                        height: 25,
+                                        decoration: BoxDecoration(
+                                            color: Colors.black12,
+                                            border: Border.all(
+                                                color: Colors.black,
+                                                width: 0.5)),
+                                        child: Center(
+                                            child: AppText(
+                                                text: "Choose file",
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 1.w,
+                                    ),
+                                    Expanded(
+                                        child: AppText(
+                                      overflow: TextOverflow.ellipsis,
+                                      text: _fileName.toString(),
+                                      fontWeight: FontWeight.w500,
+                                    ))
+                                  ],
                                 ),
                               ),
-                              SizedBox(width: 1.w,),
-                              AppText(text: "No file chosen",fontWeight: FontWeight.w500,)
-                            ],
-                          ),
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            InkWell(
+                              onTap: ()async{
+                                await posterControl.uploadPoster(context);
+                              },
+                              child: Obx(() => Container(
+                                    height: 50,
+                                    width: 300,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: AppColors.primaryColor,
+                                    ),
+                                    child: Center(
+                                        child: posterControl.isLoading.value
+                                            ? CircularProgressIndicator()
+                                            : AppMainText(
+                                                text: "Upload",
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                              )),
+                                  )),
+                            ),
+                          ],
                         ),
-                      ),
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      Container(
-                        height: 50,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: AppColors.primaryColor,
-                        ),
-                        child: Center(child: AppMainText(text: "Upload",color: Colors.white,fontWeight: FontWeight.w600,)),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
-      ),
+              ),
+            );
+          }),
     );
   }
 
