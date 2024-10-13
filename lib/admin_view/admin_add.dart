@@ -23,7 +23,7 @@ class _AdminAddState extends State<AdminAdd> {
     // Pick an image file using file picker
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png'], // Restrict to image files
+      allowedExtensions: ['jpg', 'jpeg', 'png'],
     );
 
     if (result != null && result.files.isNotEmpty) {

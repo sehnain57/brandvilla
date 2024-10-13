@@ -136,6 +136,9 @@ class _MainPageState extends State<MainPage> {
                         runSpacing: 20,
                         children: List.generate(images.length, (index) {
                           return HoverContainer(
+                            onTap: (){
+                              dialogue(images[index]);
+                            },
                             height: containerHeight,
                             imageUrl: images[index],
                             width:
@@ -181,6 +184,9 @@ class _MainPageState extends State<MainPage> {
                         runSpacing: 20,
                         children: List.generate(posters.length, (index) {
                           return HoverContainer(
+                            onTap: (){
+                              dialogue(posters[index]);
+                            },
                             height: containerHeight,
                             imageUrl: posters[index],
                             width:
@@ -226,6 +232,9 @@ class _MainPageState extends State<MainPage> {
                         runSpacing: 20,
                         children: List.generate(fest.length, (index) {
                           return HoverContainer(
+                            onTap: (){
+                              dialogue(fest[index]);
+                            },
                             height: containerHeight,
                             imageUrl: fest[index],
                             width:
@@ -271,6 +280,9 @@ class _MainPageState extends State<MainPage> {
                         runSpacing: 20,
                         children: List.generate(posters.length, (index) {
                           return HoverContainer(
+                            onTap: (){
+                              dialogue(posters[index]);
+                            },
                             height: containerHeight,
                             imageUrl: posters[index],
                             width:
@@ -316,6 +328,9 @@ class _MainPageState extends State<MainPage> {
                         runSpacing: 20,
                         children: List.generate(visitingCards.length, (index) {
                           return HoverContainer(
+                            onTap: (){
+                              dialogue(visitingCards[index]);
+                            },
                             height: containerHeight,
                             imageUrl: visitingCards[index],
                             width:
@@ -335,6 +350,16 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
     );
+  }
+
+  dialogue(String imageUrl) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            content: Image.asset(imageUrl),
+          );
+        });
   }
 
   List<String> images = [
@@ -360,12 +385,17 @@ class _MainPageState extends State<MainPage> {
 class HoverContainer extends StatefulWidget {
   final String imageUrl;
   final double width, height;
+  final void Function()? onTap;
 
   const HoverContainer(
-      {super.key, required this.imageUrl, required this.width, required this.height});
+      {super.key,
+      required this.imageUrl,
+      required this.width,
+      required this.height,
+      this.onTap});
 
   @override
-  _HoverContainerState createState() => _HoverContainerState();
+  State<HoverContainer> createState() => _HoverContainerState();
 }
 
 class _HoverContainerState extends State<HoverContainer> {
@@ -376,24 +406,27 @@ class _HoverContainerState extends State<HoverContainer> {
     return MouseRegion(
       onEnter: (event) => setState(() => _isHovered = true),
       onExit: (event) => setState(() => _isHovered = false),
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 200),
-        width: widget.width,
-        height: widget.height,
-        decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(4),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12.withOpacity(_isHovered ? 0.1 : 0.1),
-                blurRadius: _isHovered ? 20 : 1,
-                spreadRadius: _isHovered ? 2 : 1,
-              ),
-            ],
-            image: DecorationImage(
-                image: AssetImage(widget.imageUrl), fit: BoxFit.fill)),
-        alignment: Alignment.center,
-        // child: Image.asset(widget.imageUrl,fit: BoxFit.fill,),
+      child: InkWell(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 200),
+          width: widget.width,
+          height: widget.height,
+          decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(4),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12.withOpacity(_isHovered ? 0.1 : 0.1),
+                  blurRadius: _isHovered ? 20 : 1,
+                  spreadRadius: _isHovered ? 2 : 1,
+                ),
+              ],
+              image: DecorationImage(
+                  image: AssetImage(widget.imageUrl), fit: BoxFit.fill)),
+          alignment: Alignment.center,
+          // child: Image.asset(widget.imageUrl,fit: BoxFit.fill,),
+        ),
       ),
     );
   }
