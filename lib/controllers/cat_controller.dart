@@ -72,9 +72,11 @@ class PosterControl extends GetxController {
         print("Admin Email: ${responseBody['data']['admin']['email']}");
         print("Token: ${responseBody['data']['token']}");
 
+
         // Return the token
         return responseBody['data']['token'];
       } else {
+
         // Print the error response if login fails
         print("Failed to login: ${response.statusCode}, Body: ${response.body}");
         return null;

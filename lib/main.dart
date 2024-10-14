@@ -1,11 +1,12 @@
+import 'package:brandvilla/user_view/admin_login.dart';
+import 'package:brandvilla/user_view/all_posters_view.dart';
 import 'package:brandvilla/user_view/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
-
 import 'admin_view/admin_add.dart';
 
-void main() {
+void main()async {
   runApp(const MyApp());
 }
 
@@ -29,8 +30,10 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: "/main",
         getPages: [
-          GetPage(name: "/main", page: () => MainPage()),
-          GetPage(name: "/admin", page: () => AdminAdd()),
+          GetPage(name: "/main", page: () => MainPage(),),
+          GetPage(name: "/admin", page: () => AdminAdd(),),
+          GetPage(name: "/admin/login", page: () => AdminLogin(),),
+          GetPage(name: "/all", page: () => PostersScreen(),),
         ],
       );
     });

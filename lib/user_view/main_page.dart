@@ -117,74 +117,71 @@ class _MainPageState extends State<MainPage> {
                 } else if (postersController.postersList.isEmpty) {
                   return Center(child: Text('No posters available'));
                 } else {
-                  return ListView.builder(
-                    itemCount: postersController.postersList.length,
-                    itemBuilder: (context, index) {
-                      var category = postersController.postersList[index];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          if (category.posters!.isNotEmpty)
-                            AppMainText(
-                              text: category.name ?? '',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.sp,
-                            ),
-                          SizedBox(
-                            height: 2.h,
-                          ),
-                          if (category.posters!.isNotEmpty)
-                            Center(
-                              child: LayoutBuilder(
-                                builder: (context, constraints) {
-                                  double width = constraints.maxWidth;
-                                  int crossAxisCount =
-                                      getCrossAxisCount(width);
-                                  double containerHeight =
-                                      getContainerHeight(width);
-
-                                  return Wrap(
-                                    spacing: 20,
-                                    runSpacing: 20,
-                                    children: List.generate(
-                                        category.posters!.length,
-                                        (posterIndex) {
-                                      var poster =
-                                          category.posters![posterIndex];
-                                      return HoverContainer(
-                                        onTap: (){
-                                          dialogue("https://brandvillab.leadgenadvertisements.com/${poster.image}");
-                                        },
-                                        height: containerHeight,
-                                        imageUrl: "https://brandvillab.leadgenadvertisements.com/${poster.image}",
-                                        width:
-                                        (width / crossAxisCount) - 20, // Adjust width
-                                      );
-
-                                      //   GestureDetector(
-                                      //   onTap: () {
-                                      //     // Handle poster tap
-                                      //   },
-                                      //   child: Image.network(
-                                      //     "https://brandvillab.leadgenadvertisements.com/uploads/${poster.image}" ??
-                                      //         '',
-                                      //     height: containerHeight,
-                                      //     width:
-                                      //         (width / crossAxisCount) - 20,
-                                      //     fit: BoxFit.cover,
-                                      //   ),
-                                      // );
-                                    }),
-                                  );
-                                },
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: ListView.builder(
+                      itemCount: postersController.postersList.length,
+                      itemBuilder: (context, index) {
+                        var category = postersController.postersList[index];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (category.posters!.isNotEmpty)
+                              AppMainText(
+                                text: category.name ?? '',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15.sp,
                               ),
+                            SizedBox(
+                              height: 2.h,
                             ),
-                          SizedBox(
-                            height: 2.h,
-                          ),
-                        ],
-                      );
-                    },
+                            if (category.posters!.isNotEmpty)
+                              Center(
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    double width = constraints.maxWidth;
+                                    int crossAxisCount =
+                                        getCrossAxisCount(width);
+                                    double containerHeight =
+                                        getContainerHeight(width);
+
+                                    return StatefulBuilder(
+                                      builder: (context,setState) {
+                                        return Wrap(
+                                          spacing: 20,
+                                          runSpacing: 20,
+                                          children: List.generate(
+                                              category.posters!.length,
+                                              (posterIndex) {
+                                            var poster =
+                                                category.posters![posterIndex];
+                                            return HoverContainer(
+                                              onTap: () {
+                                                dialogue(
+                                                  category.posters!.map((e) => e.image!).toList(),
+                                                  posterIndex,
+                                                );
+                                              },
+                                              height: containerHeight,
+                                              imageUrl:
+                                                  "https://brandvillab.leadgenadvertisements.com/${poster.image}",
+                                              width: (width / crossAxisCount) -
+                                                  20, // Adjust width
+                                            );
+                                          }),
+                                        );
+                                      }
+                                    );
+                                  },
+                                ),
+                              ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   );
                 }
               }),
@@ -490,34 +487,29 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  dialogue(String imageUrl) {
+  dialogue(List<String> images, int initialIndex) {
     showDialog(
-        context: context,
-        builder: (_) {
-          return AlertDialog(
-            content: Image.network(imageUrl),
-          );
-        });
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: SizedBox(
+            height: 80.h, // Adjust the height as needed
+            width: 50.w,
+            child: PageView.builder(
+              controller: PageController(initialPage: initialIndex),
+              itemCount: images.length,
+              itemBuilder: (context, pageIndex) {
+                return Image.network(
+                  "https://brandvillab.leadgenadvertisements.com/${images[pageIndex]}",
+                  fit: BoxFit.contain,
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
-
-  List<String> images = [
-    "assets/logo1.jpeg",
-    "assets/logo2.jpeg",
-    "assets/logo3.jpeg",
-    "assets/logo4.jpeg",
-    "assets/logo5.jpeg",
-  ];
-  List<String> posters = [
-    "assets/broch1.jpeg",
-    "assets/broch2.jpeg",
-  ];
-  List<String> fest = [
-    "assets/fest1.jpeg",
-  ];
-  List<String> visitingCards = [
-    "assets/logo4.jpeg",
-    "assets/logo5.jpeg",
-  ];
 }
 
 class HoverContainer extends StatefulWidget {
@@ -563,9 +555,10 @@ class _HoverContainerState extends State<HoverContainer> {
               image: DecorationImage(
                   image: NetworkImage(widget.imageUrl), fit: BoxFit.fill)),
           alignment: Alignment.center,
-          // child: Image.asset(widget.imageUrl,fit: BoxFit.fill,),
         ),
       ),
     );
   }
 }
+
+

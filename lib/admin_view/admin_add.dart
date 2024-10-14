@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:brandvilla/constants/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:file_picker/file_picker.dart';
 import '../constants/app_colors.dart';
@@ -17,6 +18,24 @@ class AdminAdd extends StatefulWidget {
 }
 
 class _AdminAddState extends State<AdminAdd> {
+  @override
+  void initState() {
+    getRoute();
+    super.initState();
+  }
+
+  getRoute() async {
+    final prefs = await SharedPreferences.getInstance();
+    final adminDone = prefs.getBool("adminTokenDone") ?? false;
+
+    if (!adminDone) {
+      Future.delayed(
+        Duration(microseconds: 1),
+        () => Get.toNamed("/admin/login"),
+      );
+    }
+  }
+
   String? _fileName = "No file chosen";
 
   Future<void> _pickImage() async {
@@ -50,70 +69,6 @@ class _AdminAddState extends State<AdminAdd> {
           ),
           backgroundColor: Colors.white,
           elevation: 10,
-          // actions: [
-          //   Padding(
-          //     padding: const EdgeInsets.only(top: 15.0),
-          //     child: Center(
-          //       child: Obx(() => InkWell(
-          //             onTap: () {},
-          //             onHover: (val) {
-          //               hoverControl.updateLoginHover(val);
-          //             },
-          //             child: Container(
-          //               width: 80,
-          //               height: 40,
-          //               decoration: BoxDecoration(
-          //                   borderRadius: BorderRadius.circular(6),
-          //                   color: hoverControl.loginHover.value
-          //                       ? AppColors.primaryColor
-          //                       : Colors.white,
-          //                   border: Border.all(color: AppColors.primaryColor)),
-          //               alignment: Alignment.center,
-          //               child: AppText(
-          //                 text: "Login",
-          //                 color: hoverControl.loginHover.value
-          //                     ? AppColors.white
-          //                     : AppColors.primaryColor,
-          //               ),
-          //             ),
-          //           )),
-          //     ),
-          //   ),
-          //   SizedBox(
-          //     width: 2.w,
-          //   ),
-          //   Padding(
-          //     padding: const EdgeInsets.only(top: 15.0),
-          //     child: Center(
-          //       child: Obx(() => InkWell(
-          //             onTap: () {},
-          //             onHover: (val) {
-          //               hoverControl.updateSignUpHover(val);
-          //             },
-          //             child: Container(
-          //               width: 80,
-          //               height: 40,
-          //               decoration: BoxDecoration(
-          //                   borderRadius: BorderRadius.circular(6),
-          //                   color: hoverControl.signUpHover.value
-          //                       ? AppColors.white
-          //                       : AppColors.primaryColor,
-          //                   border: Border.all(color: AppColors.primaryColor)),
-          //               alignment: Alignment.center,
-          //               child: AppText(
-          //                 text: "Signup",
-          //                 color: hoverControl.signUpHover.value
-          //                     ? AppColors.primaryColor
-          //                     : AppColors.white,
-          //               ),
-          //             ),
-          //           )),
-          //     ),
-          //   ),
-          //   SizedBox(
-          //     width: 5.w,
-          //   ),
-          // ],
         ),
       ),
       body: GetBuilder<CategoriesController>(
@@ -162,7 +117,8 @@ class _AdminAddState extends State<AdminAdd> {
                                     setState(() {
                                       cat = val;
                                     });
-                                    print("Selected Category ID: ${posterControl.selectedCategoryId}");
+                                    print(
+                                        "Selected Category ID: ${posterControl.selectedCategoryId}");
                                   },
                                   onSaved: (val) {
                                     setState(() {
@@ -220,7 +176,7 @@ class _AdminAddState extends State<AdminAdd> {
                               height: 5.h,
                             ),
                             InkWell(
-                              onTap: ()async{
+                              onTap: () async {
                                 await posterControl.uploadPoster(context);
                               },
                               child: Obx(() => Container(

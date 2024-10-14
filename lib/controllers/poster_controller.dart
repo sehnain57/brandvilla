@@ -28,6 +28,8 @@ class PostersController extends GetxController {
           postersList.assignAll(postersModel.data!);
         }
       } else {
+        var jsonData = json.decode(response.body);
+        print(jsonData);
         Get.snackbar("Error", "Failed to load posters");
       }
     } catch (e) {
