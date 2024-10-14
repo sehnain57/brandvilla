@@ -120,14 +120,27 @@ class PosterControl extends GetxController {
             'https://brandvillab.leadgenadvertisements.com/api/poster/v1/poster'),
       );
 
+      String? mimeType = lookupMimeType('uploaded_image.jpg', headerBytes: selectedImageBytes);
+      if (mimeType == null) {
+        print("Could not determine MIME type");
+        return;
+      }
+
+      // Parse the MIME type into `MediaType`
+      List<String> mimeTypeSplit = mimeType.split('/');
+      String mimeTypeMain = mimeTypeSplit[0];
+      String mimeTypeSub = mimeTypeSplit[1];
+      print(mimeTypeSub);
+      print(mimeTypeMain);
+      print(token);
       // Add the selected category ID
       request.fields['categoryId'] = selectedCategoryId!;
-      request.headers['Authorization'] = token.toString();
+      request.headers['Authorization'] = "Bearer $token";
       request.files.add(http.MultipartFile.fromBytes(
         'image',
         selectedImageBytes!,
         filename: 'uploaded_image.jpg',
-        contentType: MediaType('image', 'jpeg'),
+        contentType: MediaType(mimeTypeMain, mimeTypeSub),
       ));
 
       // Send the request and get the response

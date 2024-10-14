@@ -31,7 +31,6 @@ class _AdminAddState extends State<AdminAdd> {
       setState(() {
         _fileName = result.files.first.name;
         posterControl.setSelectedImageBytes(result.files.first.bytes);
-        print(posterControl.selectedImageBytes);
       });
     }
   }
