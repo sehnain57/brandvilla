@@ -140,10 +140,11 @@ class _MainPageState extends State<MainPage> {
                                 child: LayoutBuilder(
                                   builder: (context, constraints) {
                                     double width = constraints.maxWidth;
+                                    double height = constraints.maxHeight;
                                     int crossAxisCount =
                                         getCrossAxisCount(width);
                                     double containerHeight =
-                                        getContainerHeight(width);
+                                        getContainerHeight(height);
 
                                     return StatefulBuilder(
                                         builder: (context, setState) {
@@ -167,8 +168,8 @@ class _MainPageState extends State<MainPage> {
                                             height: containerHeight,
                                             imageUrl:
                                                 "https://brandvillab.leadgenadvertisements.com/${poster.image}",
-                                            width: (width / crossAxisCount) -
-                                                20, // Adjust width
+                                            // width: (width / crossAxisCount) -
+                                            //     20, // Adjust width
                                           );
                                         }),
                                       );
@@ -515,13 +516,14 @@ class _MainPageState extends State<MainPage> {
 
 class HoverContainer extends StatefulWidget {
   final String imageUrl;
-  final double width, height;
+  final double? width;
+  final double height;
   final void Function()? onTap;
 
   const HoverContainer(
       {super.key,
       required this.imageUrl,
-      required this.width,
+      this.width,
       required this.height,
       this.onTap});
 
@@ -544,18 +546,20 @@ class _HoverContainerState extends State<HoverContainer> {
           width: widget.width,
           height: widget.height,
           decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(4),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12.withOpacity(_isHovered ? 0.1 : 0.1),
-                  blurRadius: _isHovered ? 20 : 1,
-                  spreadRadius: _isHovered ? 2 : 1,
-                ),
-              ],
-              image: DecorationImage(
-                  image: NetworkImage(widget.imageUrl), fit: BoxFit.fill)),
-          alignment: Alignment.center,
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(4),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12.withOpacity(_isHovered ? 0.2 : 0.1),
+                blurRadius: _isHovered ? 20 : 1,
+                spreadRadius: _isHovered ? 3 : 1,
+              ),
+            ],
+          ),
+          child: Image.network(
+            widget.imageUrl,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );

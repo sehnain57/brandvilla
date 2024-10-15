@@ -63,6 +63,7 @@ class _PostersScreenState extends State<PostersScreen> {
                     padding: const EdgeInsets.all(20.0),
                     child: Stack(
                       children: [
+
                         HoverContainer(
                           height: containerHeight,
                           imageUrl:
