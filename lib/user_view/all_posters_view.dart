@@ -54,8 +54,7 @@ class _PostersScreenState extends State<PostersScreen> {
                   crossAxisCount: crossAxisCount,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
-                  childAspectRatio:
-                      (width / crossAxisCount) / containerHeight,
+                  childAspectRatio: (width / crossAxisCount) / containerHeight,
                 ),
                 itemCount: postersController.postersList.length,
                 itemBuilder: (context, index) {
@@ -66,7 +65,9 @@ class _PostersScreenState extends State<PostersScreen> {
                       children: [
                         HoverContainer(
                           height: containerHeight,
-                          imageUrl: "https://brandvillab.leadgenadvertisements.com/${poster.image}" ?? '',
+                          imageUrl:
+                              "https://brandvillab.leadgenadvertisements.com/${poster.image}" ??
+                                  '',
                           width: double.infinity,
                         ),
                         Positioned(
@@ -76,6 +77,10 @@ class _PostersScreenState extends State<PostersScreen> {
                             icon: Icon(Icons.delete, color: Colors.red),
                             onPressed: () {
                               postersController.deletePoster(poster.id!);
+                              setState(() {
+                                postersController.postersList.removeWhere(
+                                    (posters) => posters.id == poster.id);
+                              });
                             },
                           ),
                         ),

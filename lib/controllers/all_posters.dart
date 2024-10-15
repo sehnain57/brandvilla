@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/all_posters.dart';
+import 'cat_controller.dart';
 
 class PostersController extends GetxController {
   var isLoading = true.obs;
@@ -33,10 +34,18 @@ class PostersController extends GetxController {
     }
   }
 
+  PosterControl posterControl = Get.put(PosterControl());
+
   Future<void> deletePoster(String id) async {
     try {
-      final response = await http.delete(Uri.parse(
-          'https://brandvillab.leadgenadvertisements.com/api/poster/v1/poster/$id'));
+      String email = "admin@brandvilla.com";
+      String password = "admin";
+
+      String? token = await posterControl.adminLogin(email, password);
+      final response = await http.delete(
+          Uri.parse(
+              'https://brandvillab.leadgenadvertisements.com/api/poster/v1/poster/$id'),
+          headers: {"Authorization": "Bearer $token"});
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         postersList.removeWhere((poster) => poster.id == id);
