@@ -146,32 +146,33 @@ class _MainPageState extends State<MainPage> {
                                         getContainerHeight(width);
 
                                     return StatefulBuilder(
-                                      builder: (context,setState) {
-                                        return Wrap(
-                                          spacing: 20,
-                                          runSpacing: 20,
-                                          children: List.generate(
-                                              category.posters!.length,
-                                              (posterIndex) {
-                                            var poster =
-                                                category.posters![posterIndex];
-                                            return HoverContainer(
-                                              onTap: () {
-                                                dialogue(
-                                                  category.posters!.map((e) => e.image!).toList(),
-                                                  posterIndex,
-                                                );
-                                              },
-                                              height: containerHeight,
-                                              imageUrl:
-                                                  "https://brandvillab.leadgenadvertisements.com/${poster.image}",
-                                              width: (width / crossAxisCount) -
-                                                  20, // Adjust width
-                                            );
-                                          }),
-                                        );
-                                      }
-                                    );
+                                        builder: (context, setState) {
+                                      return Wrap(
+                                        spacing: 20,
+                                        runSpacing: 20,
+                                        children: List.generate(
+                                            category.posters!.length,
+                                            (posterIndex) {
+                                          var poster =
+                                              category.posters![posterIndex];
+                                          return HoverContainer(
+                                            onTap: () {
+                                              dialogue(
+                                                category.posters!
+                                                    .map((e) => e.image!)
+                                                    .toList(),
+                                                posterIndex,
+                                              );
+                                            },
+                                            height: containerHeight,
+                                            imageUrl:
+                                                "https://brandvillab.leadgenadvertisements.com/${poster.image}",
+                                            width: (width / crossAxisCount) -
+                                                20, // Adjust width
+                                          );
+                                        }),
+                                      );
+                                    });
                                   },
                                 ),
                               ),
@@ -560,5 +561,3 @@ class _HoverContainerState extends State<HoverContainer> {
     );
   }
 }
-
-

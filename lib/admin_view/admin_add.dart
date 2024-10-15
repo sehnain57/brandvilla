@@ -90,7 +90,32 @@ class _AdminAddState extends State<AdminAdd> {
                         fontWeight: FontWeight.bold,
                       ),
                       SizedBox(
-                        height: 15.h,
+                        height: 5.h,
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: InkWell(
+                          onTap: () async {
+                            Get.toNamed("/all");
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 200,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: AppColors.primaryColor,
+                            ),
+                            child: const Center(
+                                child: AppMainText(
+                              text: "All Posters",
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            )),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.h,
                       ),
                       SizedBox(
                         width: 350,
